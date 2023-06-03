@@ -6,28 +6,23 @@ import App from "./App";
 import CityPage from "./routes/CityPage";
 import AddCityModal from "./components/AddCityModal";
 
-const BASE_URL = "/react-weather-app/";
-
 function Router() {
-  const router = createBrowserRouter(
-    [
-      {
-        path: "/",
-        element: <App />,
-        children: [
-          {
-            path: "/",
-            element: <CityPage />,
-          },
-          {
-            path: ":id",
-            element: <CityPage />,
-          },
-        ],
-      },
-    ],
-    { basename: BASE_URL }
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <App />,
+      children: [
+        {
+          path: "/",
+          element: <CityPage />,
+        },
+        {
+          path: ":id",
+          element: <CityPage />,
+        },
+      ],
+    },
+  ]);
 
   return <RouterProvider router={router} />;
 }

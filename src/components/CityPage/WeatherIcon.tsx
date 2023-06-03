@@ -10,9 +10,8 @@ interface WeatherIconProps {
 const WeatherIcon = ({ id, isNight, size = "small" }: WeatherIconProps) => {
   const name = getIconNameById(id, isNight);
 
-  const { BASE_URL } = import.meta.env;
 
-  const src = `${BASE_URL}/assets/weatherConditionIcons/${name}.svg`;
+  const src = `/assets/weatherConditionIcons/${name}.svg`;
 
   let iconSize;
 
