@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import weatherReducer from "./weatherSlice";
+import modalReducer from "./modalReducer";
 
 const store = configureStore({
   reducer: {
     weather: weatherReducer,
+    modal: modalReducer,
   },
 });
 

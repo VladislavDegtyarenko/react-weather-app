@@ -2,38 +2,27 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
-import App from "./App";
-import Main from "./routes/Main";
-import ErrorPage from "./routes/404";
-import DetailsPage from "./routes/DetailsPage";
+// MUI
+import MUIProvider from "./MUIProvider";
 
-const BASE_URL = "/react-weather-app/";
+// Redux
+import { Provider as ReduxProvider } from "react-redux";
+import store from "./store/store";
 
-const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      element: <App />,
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          path: "/",
-          element: <Main />,
-        },
-        {
-          path: ":id",
-          element: <DetailsPage />,
-        },
-      ],
-    },
-  ],
-  { basename: BASE_URL }
-);
+// Router
+import Router from "./Router";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <MUIProvider>
+      <ReduxProvider store={store}>
+        <Router />
+      </ReduxProvider>
+    </MUIProvider>
   </React.StrictMode>
 );

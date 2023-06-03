@@ -1,35 +1,21 @@
-// Redux
-import { Provider } from "react-redux";
-import store from "./store/store";
+import { lazy } from "react";
+import { Outlet } from "react-router-dom";
 
 // MUI
-import { Box, Container } from "@mui/material";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Box } from "@mui/material";
 
 // Main UI Components
 import Header from "./components/Header";
-
-// Router
-import { Outlet } from "react-router-dom";
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
+// import AddCityModal from "./components/AddCityModal";
+const AddCityModal = lazy(() => import("./components/AddCityModal"));
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
-      <Provider store={store}>
-        <Box sx={{ minHeight: "100vh", bgcolor: "background.paper" }}>
-          <Header />
-          <Container maxWidth="sm">
-            <Outlet />
-          </Container>
-        </Box>
-      </Provider>
-    </ThemeProvider>
+    <Box sx={{ minHeight: "100svh", bgcolor: "background.paper" }}>
+      <Header />
+      <Outlet />
+      <AddCityModal />
+    </Box>
   );
 }
 

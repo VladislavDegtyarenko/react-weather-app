@@ -17,7 +17,7 @@ const useCitySuggestions = (value: string, limit = 5): [Option[], boolean] => {
         }
 
         const response = await fetch(
-          `${GEO_API_URL}?minPopulation=50000&limit=${limit}&namePrefix=${value}`,
+          `${GEO_API_URL}?minPopulation=10000&limit=${limit}&namePrefix=${value}`,
           GEO_API_OPTIONS
         );
 

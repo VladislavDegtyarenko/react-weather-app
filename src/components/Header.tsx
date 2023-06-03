@@ -1,22 +1,48 @@
-import { Box } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import { IconButton, Tabs, Tab, AppBar, Container, Box } from "@mui/material";
 import { Link } from "react-router-dom";
+import useRouteMatch from "../functions/useRouteMatch";
+
+import { useAppSelector, useAppDispatch } from "../hooks/reduxHooks";
+import { openModal } from "../store/modalReducer";
 
 const Header = () => {
+  const dispatch = useAppDispatch();
+  const cities = useAppSelector((state) => state.weather.cities);
+
+  const cityIds = cities.map(({ id }) => String(id));
+
+  const routes = [...cityIds];
+
+  const routeMatch = useRouteMatch(routes);
+  const currentTab = routeMatch?.pattern ? String(routeMatch.pattern.path) : routes[0];
+
   return (
-    <Box sx={{ bgcolor: "primary.dark", paddingY: 2, boxShadow: 4 }}>
-      <Link to="/">
-        <Typography
-          variant="h4"
-          component="h1"
-          align="center"
-          fontWeight="bold"
-          color="primary.contrastText"
-        >
-          Weather
-        </Typography>
-      </Link>
-    </Box>
+    <AppBar>
+      <Container>
+        <Box sx={{ display: "flex", alignItems: "center", minHeight: "3em" }}>
+          {cities && cities.length > 0 ? (
+            <Tabs value={currentTab} variant="scrollable" scrollButtons={false}>
+              {cities.map(({ city, id }) => (
+                <Tab
+                  label={city}
+                  value={String(id)}
+                  to={String(id)}
+                  component={Link}
+                  key={id}
+                />
+              ))}
+            </Tabs>
+          ) : null}
+          <IconButton
+            size="small"
+            sx={{ width: "1.5em", height: "1.5em", marginLeft: "auto", display: "block" }}
+            onClick={() => dispatch(openModal())}
+          >
+            +
+          </IconButton>
+        </Box>
+      </Container>
+    </AppBar>
   );
 };
 

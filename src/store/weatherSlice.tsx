@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// Types
 import { InitialState, City } from "../types/types";
 
 const LOCAL_STORAGE_KEY = "weatherState";
