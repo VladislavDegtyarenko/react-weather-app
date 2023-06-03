@@ -1,16 +1,13 @@
 import { addCity } from "../store/weatherSlice";
 
 // React
-import { useState, useCallback, FormEvent, lazy } from "react";
+import { useState, useCallback, FormEvent } from "react";
 
 // Router
 import { useNavigate } from "react-router-dom";
 
 // MUI
-import { Button, Typography } from "@mui/material";
-const FormControl = lazy(() => import("@mui/material/FormControl"));
-const Autocomplete = lazy(() => import("@mui/material/Autocomplete"));
-const TextField = lazy(() => import("@mui/material/TextField"));
+import { Autocomplete, TextField, Button, FormControl, Typography } from "@mui/material";
 
 import Modal from "../ui/Modal";
 
