@@ -16,7 +16,7 @@ const PageWrapper = ({ isDaytime = true, sx = {}, children }: PageWrapperProps) 
     <Box
       display="flex"
       flexDirection="column"
-      pt={6}
+      pt={0}
       minHeight="100svh"
       sx={{
         background: isDaytime
@@ -28,7 +28,7 @@ const PageWrapper = ({ isDaytime = true, sx = {}, children }: PageWrapperProps) 
         <Grow appear={true} in={true}>
           <Box
             color="text.primary"
-            pt={4}
+            pt={10}
             display="flex"
             flexDirection="column"
             flexGrow="1"
