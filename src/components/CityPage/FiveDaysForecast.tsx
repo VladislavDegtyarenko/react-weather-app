@@ -8,12 +8,10 @@ interface FiveDaysForecastProps {
 }
 
 const FiveDaysForecast = ({ hourlyForecastData }: FiveDaysForecastProps) => {
-  // console.log("hourlyForecastData: ", hourlyForecastData);
   const dataWithDates = hourlyForecastData.map((t) => ({
     ...t,
     dt: new Date(t.dt * 1000),
   }));
-  // console.log("dataWithDates: ", dataWithDates);
 
   const groupedDates = dataWithDates.reduce(
     (groups: { [key: string]: any[] }, timestamp) => {
