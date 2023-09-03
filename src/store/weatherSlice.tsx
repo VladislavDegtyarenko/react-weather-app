@@ -1,7 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
+
+import { WEATHER_API_BASE_URL, WEATHER_API_KEY } from "../api/weather";
 
 // Types
-import { InitialState, City } from "../types/types";
+import { InitialState, City, WeatherData, ForecastData } from "../types/types";
 
 const LOCAL_STORAGE_KEY = "weatherState";
 
@@ -47,6 +50,44 @@ try {
   initialState = { cities: DEFAULT_STATE };
 }
 
+// Thunks
+export const fetchWeatherData = createAsyncThunk(
+  "weather/fetchWeatherData",
+  async ({
+    cityId,
+    latitude,
+    longitude,
+  }: {
+    cityId: number;
+    latitude: number;
+    longitude: number;
+  }) => {
+    const response = await axios.get(
+      `${WEATHER_API_BASE_URL}/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${WEATHER_API_KEY}`
+    );
+
+    return { cityId, weatherData: response.data };
+  }
+);
+
+export const fetchForecastData = createAsyncThunk(
+  "weather/fetchForecastData",
+  async ({
+    cityId,
+    latitude,
+    longitude,
+  }: {
+    cityId: number;
+    latitude: number;
+    longitude: number;
+  }) => {
+    const response = await axios.get(
+      `${WEATHER_API_BASE_URL}/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${WEATHER_API_KEY}`
+    );
+    return { cityId, forecastData: response.data.list };
+  }
+);
+
 const weatherSlice = createSlice({
   name: "weather",
   initialState,
@@ -56,7 +97,7 @@ const weatherSlice = createSlice({
       if (!city) return;
 
       state.cities.push(city);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+      // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
     },
     removeCity: (state, action: PayloadAction<City["id"]>) => {
       const cityIdToRemove = action.payload;
@@ -64,9 +105,44 @@ const weatherSlice = createSlice({
 
       if (index !== -1) {
         state.cities.splice(index, 1);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+        // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      fetchWeatherData.fulfilled,
+      (
+        state,
+        action: PayloadAction<{
+          cityId: number;
+          weatherData: WeatherData;
+        }>
+      ) => {
+        const { cityId, weatherData } = action.payload;
+
+        state.cities = state.cities.map((city) =>
+          city.id === cityId ? { ...city, weatherData } : city
+        );
+      }
+    );
+
+    builder.addCase(
+      fetchForecastData.fulfilled,
+      (
+        state,
+        action: PayloadAction<{
+          cityId: number;
+          forecastData: ForecastData;
+        }>
+      ) => {
+        const { cityId, forecastData } = action.payload;
+
+        state.cities = state.cities.map((city) =>
+          city.id === cityId ? { ...city, forecastData } : city
+        );
+      }
+    );
   },
 });
 

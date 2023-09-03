@@ -1,7 +1,12 @@
-import { Box, Typography, Button } from "@mui/material";
-
+// Core
+import { useEffect } from "react";
+import styled from "@emotion/styled";
+import { fetchForecastData, fetchWeatherData } from "../store/weatherSlice";
 import { useAppSelector, useAppDispatch } from "../hooks/reduxHooks";
 import { openModal } from "../store/modalReducer";
+
+// MUI
+import { Box, Typography, Button } from "@mui/material";
 
 // Router
 import { useParams } from "react-router-dom";
@@ -12,17 +17,10 @@ import FiveDaysForecast from "../components/CityPage/FiveDaysForecast";
 import MainCard from "../components/CityPage/MainCard/MainCard";
 import SunTimes from "../components/CityPage/SunTimes";
 import Heading from "../components/CityPage/Heading";
-import Footer from "./../components/Footer";
-
-// API
-import useWeatherData from "../hooks/useWeatherData";
-import useHourlyForecastData from "../hooks/useHourlyForecastData";
+import ForecastChart from "../components/CityPage/ForecastChart";
 
 // Types
 import { City } from "../types/types";
-import ForecastChart from "../components/CityPage/ForecastChart";
-
-import styled from "@emotion/styled";
 
 const ChartWrapper = styled("div")({
   width: "100%",
@@ -41,18 +39,27 @@ const CityPage = () => {
 
   const cities: City[] = useAppSelector((state) => state.weather.cities);
 
-  const currentCity: City = id
-    ? cities.find((city) => String(city.id) === id)!
-    : cities[0];
+  const currentCity: City = cities.find((city) => String(city.id) === id)! || cities[0];
 
   const city = currentCity?.city || "";
   const country = currentCity?.country || "";
   const latitude = currentCity?.latitude || 0;
   const longitude = currentCity?.longitude || 0;
+  const cityId = id ? parseInt(id) : -1;
 
   // Data
-  const { weatherData } = useWeatherData(latitude, longitude);
-  const { hourlyForecastData } = useHourlyForecastData(latitude, longitude);
+  const weatherData = currentCity.weatherData;
+  const hourlyForecastData = currentCity.forecastData;
+
+  useEffect(() => {
+    if (!weatherData) {
+      dispatch(fetchWeatherData({ cityId, latitude, longitude }));
+    }
+
+    if (!hourlyForecastData) {
+      dispatch(fetchForecastData({ cityId, latitude, longitude }));
+    }
+  }, [weatherData, hourlyForecastData, cityId]);
 
   if (!cities || cities.length === 0) {
     return (

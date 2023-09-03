@@ -4,6 +4,8 @@ export interface City {
   country: string;
   latitude: number;
   longitude: number;
+  weatherData?: WeatherData;
+  forecastData?: ForecastData;
 }
 
 export interface Option extends City {
