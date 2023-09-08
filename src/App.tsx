@@ -1,19 +1,22 @@
 import { lazy } from "react";
-import { Outlet } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 // MUI
 import { Box } from "@mui/material";
 
 // Main UI Components
 import Header from "./components/Header";
-// import AddCityModal from "./components/AddCityModal";
+import CityPage from "./routes/CityPage";
 const AddCityModal = lazy(() => import("./components/AddCityModal"));
 
 function App() {
   return (
     <Box sx={{ minHeight: "100svh", bgcolor: "background.paper" }}>
       <Header />
-      <Outlet />
+      <Routes>
+        <Route path=":id" element={<CityPage />} />
+        <Route path="*" element={<CityPage />} />
+      </Routes>
       <AddCityModal />
     </Box>
   );

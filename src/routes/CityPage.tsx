@@ -9,7 +9,7 @@ import { openModal } from "../store/modalReducer";
 import { Box, Typography, Button } from "@mui/material";
 
 // Router
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Main Components
 import PageWrapper from "../ui/PageWrapper";
@@ -34,8 +34,9 @@ const ChartWrapper = styled("div")({
 
 const CityPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const dispatch = useAppDispatch();
-  const handleOpenModal = () => dispatch(openModal());
 
   const cities: City[] = useAppSelector((state) => state.weather.cities);
 
@@ -45,11 +46,11 @@ const CityPage = () => {
   const country = currentCity?.country || "";
   const latitude = currentCity?.latitude || 0;
   const longitude = currentCity?.longitude || 0;
-  const cityId = id ? parseInt(id) : -1;
+  const cityId = currentCity?.id;
 
   // Data
-  const weatherData = currentCity.weatherData;
-  const hourlyForecastData = currentCity.forecastData;
+  const weatherData = currentCity?.weatherData;
+  const hourlyForecastData = currentCity?.forecastData;
 
   useEffect(() => {
     if (!weatherData) {
@@ -59,7 +60,7 @@ const CityPage = () => {
     if (!hourlyForecastData) {
       dispatch(fetchForecastData({ cityId, latitude, longitude }));
     }
-  }, [weatherData, hourlyForecastData, cityId]);
+  }, [cityId]);
 
   if (!cities || cities.length === 0) {
     return (
@@ -88,7 +89,7 @@ const CityPage = () => {
             variant="outlined"
             sx={{ color: "text.primary" }}
             startIcon={<Typography variant="body1">+</Typography>}
-            onClick={handleOpenModal}
+            onClick={() => dispatch(openModal())}
           >
             Add new city
           </Button>

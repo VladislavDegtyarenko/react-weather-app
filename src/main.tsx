@@ -1,5 +1,5 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import "./index.css";
 
 import "@fontsource/roboto/300.css";
@@ -15,14 +15,15 @@ import { Provider as ReduxProvider } from "react-redux";
 import store from "./store/store";
 
 // Router
-import Router from "./Router";
+import RouterProvider from "./Router";
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
+
+createRoot(document.getElementById("root") as HTMLElement).render(
+  <StrictMode>
     <MUIProvider>
       <ReduxProvider store={store}>
-        <Router />
+        <RouterProvider />
       </ReduxProvider>
     </MUIProvider>
-  </React.StrictMode>
+  </StrictMode>
 );

@@ -1,30 +1,17 @@
 // React Router
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Main Components
+// Root Component
 import App from "./App";
-import CityPage from "./routes/CityPage";
-import AddCityModal from "./components/AddCityModal";
 
-function Router() {
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <App />,
-      children: [
-        {
-          path: "/",
-          element: <CityPage />,
-        },
-        {
-          path: ":id",
-          element: <CityPage />,
-        },
-      ],
-    },
-  ]);
-
-  return <RouterProvider router={router} />;
-}
+const Router = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/*" element={<App />}></Route>
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export default Router;
