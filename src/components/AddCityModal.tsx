@@ -20,6 +20,7 @@ import useDebounce from "../hooks/useDebounce";
 
 // Types
 import { City, Option } from "../types/types";
+import { getCityRouteSlug } from "../functions/cityRoute";
 
 const ALREADY_ADDED_ERROR = "This city is already added";
 
@@ -58,8 +59,11 @@ function AddCityModal() {
         return;
       }
 
+      const citiesToSave = [...cities, selected];
+      const cityRoute = getCityRouteSlug(selected, citiesToSave);
+
       add(selected);
-      navigate(`/${selected.id}`);
+      navigate(`/${cityRoute}`);
       dispatch(closeModal());
 
       setSelected(null);

@@ -1,20 +1,26 @@
-import { useRouteError } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
 
-export default function ErrorPage() {
-  const error = useRouteError();
+import PageWrapper from "../ui/PageWrapper";
 
-  const { statusText, message } = error as {
-    statusText: string;
-    message: string;
-  };
-
+export default function NotFoundPage() {
   return (
-    <div id="error-page">
-      <h1>Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-      <p>
-        <i>{statusText || message}</i>
-      </p>
-    </div>
+    <PageWrapper
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+      }}
+    >
+      <Box>
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>
+          404 City not found
+        </Typography>
+        <Button variant="contained" component={Link} to="/" sx={{ color: "text.primary" }}>
+          Go to home
+        </Button>
+      </Box>
+    </PageWrapper>
   );
 }

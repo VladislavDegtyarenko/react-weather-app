@@ -9,7 +9,7 @@ import { openModal } from "../store/modalReducer";
 import { Box, Typography, Button } from "@mui/material";
 
 // Router
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 // Main Components
 import PageWrapper from "../ui/PageWrapper";
@@ -21,6 +21,8 @@ import ForecastChart from "../components/CityPage/ForecastChart";
 
 // Types
 import { City } from "../types/types";
+import { findCityByRouteSlug } from "../functions/cityRoute";
+import NotFoundPage from "./404";
 
 const ChartWrapper = styled("div")({
   width: "100%",
@@ -33,36 +35,20 @@ const ChartWrapper = styled("div")({
 });
 
 const CityPage = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
+  const { citySlug } = useParams();
   const dispatch = useAppDispatch();
 
   const cities: City[] = useAppSelector((state) => state.weather.cities);
 
-  const currentCity: City = cities.find((city) => String(city.id) === id)! || cities[0];
+  const currentCity: City | undefined = citySlug
+    ? findCityByRouteSlug(cities, citySlug)
+    : cities[0];
 
-  const city = currentCity?.city || "";
-  const country = currentCity?.country || "";
-  const latitude = currentCity?.latitude || 0;
-  const longitude = currentCity?.longitude || 0;
-  const cityId = currentCity?.id;
-
-  // Data
-  const weatherData = currentCity?.weatherData;
-  const hourlyForecastData = currentCity?.forecastData;
-
-  useEffect(() => {
-    if (!weatherData) {
-      dispatch(fetchWeatherData({ cityId, latitude, longitude }));
+  if (!currentCity) {
+    if (cities.length > 0) {
+      return <NotFoundPage />;
     }
 
-    if (!hourlyForecastData) {
-      dispatch(fetchForecastData({ cityId, latitude, longitude }));
-    }
-  }, [cityId]);
-
-  if (!cities || cities.length === 0) {
     return (
       <PageWrapper sx={{ alignItems: "center", height: "calc(100svh - 4em)" }}>
         <Box
@@ -85,18 +71,33 @@ const CityPage = () => {
             Enhance your weather experience by adding a city and stay up-to-date with the
             latest forecasts!
           </Typography>
-          <Button
-            variant="outlined"
-            sx={{ color: "text.primary" }}
-            startIcon={<Typography variant="body1">+</Typography>}
-            onClick={() => dispatch(openModal())}
-          >
+          <Button variant="outlined" sx={{ color: "text.primary" }} startIcon={<Typography variant="body1">+</Typography>} onClick={() => dispatch(openModal())}>
             Add new city
           </Button>
         </Box>
       </PageWrapper>
     );
   }
+
+  const {
+    city,
+    country,
+    latitude,
+    longitude,
+    id: cityId,
+    weatherData,
+    forecastData: hourlyForecastData,
+  } = currentCity;
+
+  useEffect(() => {
+    if (!weatherData) {
+      dispatch(fetchWeatherData({ cityId, latitude, longitude }));
+    }
+
+    if (!hourlyForecastData) {
+      dispatch(fetchForecastData({ cityId, latitude, longitude }));
+    }
+  }, [cityId]);
 
   if (!weatherData || !hourlyForecastData) {
     return (
