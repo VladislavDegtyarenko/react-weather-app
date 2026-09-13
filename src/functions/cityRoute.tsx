@@ -23,7 +23,13 @@ const sanitizeToSlugPart = (value: string): string => {
 };
 
 const normalizeRouteSlug = (citySlug: string): string =>
-  decodeURIComponent(citySlug).trim().toLowerCase();
+  (() => {
+    try {
+      return decodeURIComponent(citySlug).trim().toLowerCase();
+    } catch {
+      return "__invalid_city_route__";
+    }
+  })();
 
 export const getCityRouteSlug = (
   city: City,

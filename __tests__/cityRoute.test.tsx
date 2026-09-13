@@ -54,4 +54,11 @@ describe("cityRoute", () => {
     expect(findCityByRouteSlug(cities, "springfield-usa-6")).toEqual(city2);
     expect(findCityByRouteSlug(cities, "123")).toBeUndefined();
   });
+
+  it("returns undefined for malformed percent-encoded slugs", () => {
+    const cities = [mkCity(1, "Springfield", "USA")];
+
+    expect(findCityByRouteSlug(cities, "%")).toBeUndefined();
+    expect(findCityByRouteSlug(cities, "%E0%A4%A")).toBeUndefined();
+  });
 });
