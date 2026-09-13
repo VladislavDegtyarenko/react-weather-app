@@ -4,14 +4,15 @@ import useRouteMatch from "../functions/useRouteMatch";
 
 import { useAppSelector, useAppDispatch } from "../hooks/reduxHooks";
 import { openModal } from "../store/modalReducer";
+import { getCityRouteSlug } from "../functions/cityRoute";
 
 const Header = () => {
   const dispatch = useAppDispatch();
   const cities = useAppSelector((state) => state.weather.cities);
 
-  const cityIds = cities.map(({ id }) => String(id));
+  const cityRoutes = cities.map((city) => getCityRouteSlug(city, cities));
 
-  const routes = [...cityIds];
+  const routes = [...cityRoutes];
 
   const routeMatch = useRouteMatch(routes);
   const currentTab = routeMatch?.pattern ? String(routeMatch.pattern.path) : routes[0];
@@ -22,13 +23,13 @@ const Header = () => {
         <Box sx={{ display: "flex", alignItems: "center", minHeight: "3em" }}>
           {cities && cities.length > 0 ? (
             <Tabs value={currentTab} variant="scrollable" scrollButtons={false}>
-              {cities.map(({ city, id }) => (
+              {cities.map((city) => (
                 <Tab
-                  label={city}
-                  value={String(id)}
-                  to={String(id)}
+                  label={city.city}
+                  value={getCityRouteSlug(city, cities)}
+                  to={getCityRouteSlug(city, cities)}
                   component={Link}
-                  key={id}
+                  key={city.id}
                 />
               ))}
             </Tabs>

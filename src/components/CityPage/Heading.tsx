@@ -29,23 +29,6 @@ const Heading = ({ id, city, country }: HeadingProps) => {
     navigate("/", { replace: true });
     dispatch(removeCity(id));
   };
-  /* 
-  if (index !== -1) {
-    if (index > 0) {
-      const ancestorCity = state.cities[index - 1];
-      const path = `/${ancestorCity.id}`; // Assuming your route is defined as "/cities/:id"
-      console.log("path: ", path);
-      navigate(path);
-    } else {
-      // Redirect to a default route if there are no ancestor cities
-      const path = "/"; // Replace with your desired default route
-      console.log("path: ", path);
-      navigate(path);
-    }
-
-    // state.cities.splice(index, 1);
-    // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
-  } */
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
