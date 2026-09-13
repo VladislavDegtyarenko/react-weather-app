@@ -5,9 +5,15 @@ const NON_SLUG_CHARACTERS = /[\s\p{P}\p{S}]+/gu;
 const MULTIPLE_HYPHENS = /-+/g;
 const EDGE_HYPHENS = /^-+|-+$/g;
 
+/**
+ * Returns a stable key for duplicate detection using lower-cased city and country.
+ */
 const normalizePair = (city: Pick<City, "city" | "country">): string =>
   `${city.city.trim().toLowerCase()}|${city.country.trim().toLowerCase()}`;
 
+/**
+ * Converts a raw city/country fragment into a URL slug segment.
+ */
 const sanitizeToSlugPart = (value: string): string => {
   const noDiacritics = value
     .normalize("NFD")
@@ -22,6 +28,9 @@ const sanitizeToSlugPart = (value: string): string => {
   return encodeURIComponent(slugLike);
 };
 
+/**
+ * Decodes a route slug and normalizes it for safe comparison.
+ */
 const normalizeRouteSlug = (citySlug: string): string =>
   (() => {
     try {
@@ -31,6 +40,9 @@ const normalizeRouteSlug = (citySlug: string): string =>
     }
   })();
 
+/**
+ * Builds a readable route slug for a city and appends id when duplicates exist.
+ */
 export const getCityRouteSlug = (
   city: City,
   allCities: readonly City[]
@@ -43,6 +55,9 @@ export const getCityRouteSlug = (
   return samePairCount > 1 ? `${slug}-${city.id}` : slug;
 };
 
+/**
+ * Finds a city that matches the readable route slug, including duplicate-id variants.
+ */
 export const findCityByRouteSlug = (
   cities: readonly City[],
   citySlug: string
