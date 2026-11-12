@@ -54,8 +54,8 @@ jobs:
       - name: Build the Pages site
         working-directory: app
         env:
-          VITE_RAPID_API_KEY: ${{ secrets.VITE_RAPID_API_KEY }}
-          VITE_WEATHER_API_KEY: ${{ secrets.VITE_WEATHER_API_KEY }}
+          VITE_RAPID_API_KEY: ${{ secrets.VITE_RAPID_API_KEY || vars.VITE_RAPID_API_KEY }}
+          VITE_WEATHER_API_KEY: ${{ secrets.VITE_WEATHER_API_KEY || vars.VITE_WEATHER_API_KEY }}
           VITE_MAPBOX_ACCESS_TOKEN: ${{ secrets.VITE_MAPBOX_ACCESS_TOKEN || vars.VITE_MAPBOX_ACCESS_TOKEN }}
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: |
