@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
-const CityLocationMap = lazy(() => import("./CityLocationMap"));
+const MapboxCityMap = lazy(() => import("./MapboxCityMap"));
 const LOAD_AHEAD = "160px";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   longitude: number;
 };
 
-export default function CityLocation({ city, country, latitude, longitude }: Props) {
+export default function CityMap({ city, country, latitude, longitude }: Props) {
   const PANEL = useRef<HTMLDivElement>(null);
   const TOKEN = process.env.VITE_MAPBOX_ACCESS_TOKEN?.trim();
   const [isNearViewport, setIsNearViewport] = useState(false);
@@ -66,7 +66,7 @@ export default function CityLocation({ city, country, latitude, longitude }: Pro
         >
           {isNearViewport && (
             <Suspense fallback={<Typography role="status" sx={{ p: 2 }}>Loading map…</Typography>}>
-              <CityLocationMap
+              <MapboxCityMap
                 key={`${latitude},${longitude}`}
                 token={TOKEN}
                 latitude={latitude}

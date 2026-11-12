@@ -1,6 +1,6 @@
 import { type Map, type MapboxEvent, type MapDataEvent } from "mapbox-gl";
 
-import { RADAR_MAX_ZOOM, RADAR_TILE_SIZE, type RadarFrame } from "../../api/radar";
+import { RADAR_MAX_ZOOM, RADAR_TILE_SIZE, type RadarFrame } from "./api/rainViewer";
 
 const RADAR_OPACITY = 0.8;
 const FRAME_TIMEOUT_MS = 8_000;

@@ -1,12 +1,12 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { type Map } from "mapbox-gl";
 
-import { getRadarFrames } from "../src/api/radar";
-import CityRadar from "../src/components/CityPage/CityRadar";
-import { stageRadarFrame } from "../src/components/CityPage/radarLayer";
+import { getRadarFrames } from "../src/components/CityMap/radar/api/rainViewer";
+import CityRadar from "../src/components/CityMap/radar/CityRadar";
+import { stageRadarFrame } from "../src/components/CityMap/radar/stageRadarFrame";
 
-jest.mock("../src/api/radar");
-jest.mock("../src/components/CityPage/radarLayer");
+jest.mock("../src/components/CityMap/radar/api/rainViewer");
+jest.mock("../src/components/CityMap/radar/stageRadarFrame");
 
 const FRAMES = [
   { time: Date.UTC(2026, 10, 12, 11, 30) / 1_000, tiles: "older" },

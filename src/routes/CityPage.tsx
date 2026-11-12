@@ -18,7 +18,7 @@ import MainCard from "../components/CityPage/MainCard/MainCard";
 import SunTimes from "../components/CityPage/SunTimes";
 import Heading from "../components/CityPage/Heading";
 import ForecastChart from "../components/CityPage/ForecastChart";
-import CityLocation from "../components/CityPage/CityLocation";
+import CityMap from "../components/CityMap/CityMap";
 
 // Types
 import { City } from "../types/types";
@@ -109,7 +109,7 @@ const CityPage = () => {
           Loading...
         </Typography>
       )}
-      <CityLocation city={city} country={country} latitude={latitude} longitude={longitude} />
+      <CityMap city={city} country={country} latitude={latitude} longitude={longitude} />
     </PageWrapper>
   );
 };

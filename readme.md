@@ -75,7 +75,8 @@ For a manual radar check, scroll below a city forecast. Check the pin, select an
 - [`src/Router.tsx`](src/Router.tsx) and [`src/functions/cityRoute.tsx`](src/functions/cityRoute.tsx) connect readable URLs to saved cities. Duplicate city/country pairs include an ID to keep routes distinct.
 - [`src/store/weatherSlice.tsx`](src/store/weatherSlice.tsx) manages the city list and fetched data. The listener configured in [`src/store/store.tsx`](src/store/store.tsx) saves the city list to browser storage when cities are added or removed.
 - [`src/api/`](src/api/) contains provider settings; [`src/hooks/`](src/hooks/) handles requests and forecast data.
-- [`src/components/CityPage/`](src/components/CityPage/) separates current conditions, daily forecasts, sunrise/sunset, charts, and the city map into interface components.
+- [`src/components/CityPage/`](src/components/CityPage/) contains the current conditions, forecasts, sunrise/sunset, and charts.
+- [`src/components/CityMap/`](src/components/CityMap/) contains the Mapbox map and its RainViewer radar, including the timeline, playback, and legend.
 
 Keeping routes and state logic outside the display components makes those behaviors testable without relying on a live weather service.
 

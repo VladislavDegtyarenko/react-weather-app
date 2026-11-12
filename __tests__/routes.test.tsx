@@ -39,7 +39,7 @@ jest.mock("../src/components/CityPage/Heading", () => ({
   ),
 }));
 
-jest.mock("../src/components/CityPage/CityLocationMap", () => ({
+jest.mock("../src/components/CityMap/MapboxCityMap", () => ({
   __esModule: true,
   default: ({ longitude, latitude }: { longitude: number; latitude: number }) => (
     <div data-testid="city-pin">{longitude},{latitude}</div>
