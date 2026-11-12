@@ -18,6 +18,7 @@ import MainCard from "../components/CityPage/MainCard/MainCard";
 import SunTimes from "../components/CityPage/SunTimes";
 import Heading from "../components/CityPage/Heading";
 import ForecastChart from "../components/CityPage/ForecastChart";
+import CityLocation from "../components/CityPage/CityLocation";
 
 // Types
 import { City } from "../types/types";
@@ -99,16 +100,27 @@ const CityPage = () => {
     }
   }, [cityId]);
 
-  if (!weatherData || !hourlyForecastData) {
-    return (
-      <PageWrapper>
+  return (
+    <PageWrapper>
+      {weatherData && hourlyForecastData ? (
+        <CityForecast city={currentCity} weatherData={weatherData} hourlyForecastData={hourlyForecastData} />
+      ) : (
         <Typography variant="subtitle1" textAlign="center">
           Loading...
         </Typography>
-      </PageWrapper>
-    );
-  }
+      )}
+      <CityLocation city={city} country={country} latitude={latitude} longitude={longitude} />
+    </PageWrapper>
+  );
+};
 
+type CityForecastProps = {
+  city: City;
+  weatherData: NonNullable<City["weatherData"]>;
+  hourlyForecastData: NonNullable<City["forecastData"]>;
+};
+
+function CityForecast({ city, weatherData, hourlyForecastData }: CityForecastProps) {
   const userTimezoneShift = new Date().getTimezoneOffset() * 1000 * 60; // from UTC
   const cityTimezoneShift = weatherData.timezone * 1000; // from UTC
   const timezoneShift = userTimezoneShift + cityTimezoneShift;
@@ -120,8 +132,8 @@ const CityPage = () => {
   const isDaytime = currentTime > sunriseTime && currentTime < sunsetTime;
 
   return (
-    <PageWrapper>
-      <Heading city={city} country={country} id={currentCity.id} />
+    <>
+      <Heading city={city.city} country={city.country} id={city.id} />
 
       <Box
         display="flex"
@@ -153,8 +165,8 @@ const CityPage = () => {
       <ChartWrapper>
         <ForecastChart forecastData={hourlyForecastData.slice(0, 8)} />
       </ChartWrapper>
-    </PageWrapper>
+    </>
   );
-};
+}
 
 export default CityPage;
