@@ -1,0 +1,35 @@
+--- a/src/Router.tsx
++++ b/src/Router.tsx
+@@ -1,16 +1,18 @@
+ // React Router
+-import { BrowserRouter, Routes, Route } from "react-router-dom";
++import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
+ 
+ // Root Component
+ import App from "./App";
+ 
+ const Router = () => {
++  const RoutingProvider = import.meta.env.BASE_URL === "/" ? BrowserRouter : HashRouter;
++
+   return (
+-    <BrowserRouter>
++    <RoutingProvider>
+       <Routes>
+         <Route path="/*" element={<App />}></Route>
+       </Routes>
+-    </BrowserRouter>
++    </RoutingProvider>
+   );
+ };
+ 
+--- a/src/components/CityPage/WeatherIcon.tsx
++++ b/src/components/CityPage/WeatherIcon.tsx
+@@ -11,7 +11,7 @@
+   const name = getIconNameById(id, isNight);
+ 
+ 
+-  const src = `/assets/weatherConditionIcons/${name}.svg`;
++  const src = `${import.meta.env.BASE_URL}assets/weatherConditionIcons/${name}.svg`;
+ 
+   let iconSize;
+ 

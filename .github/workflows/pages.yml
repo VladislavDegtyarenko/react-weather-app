@@ -1,0 +1,77 @@
+name: Deploy Weather App to GitHub Pages
+
+on:
+  push:
+    branches: [gh-pages]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: weather-app-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out deployment configuration
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out app from main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: app
+          persist-credentials: false
+          sparse-checkout-cone: false
+          sparse-checkout: |
+            /*
+            !/.env*
+            !/dist/
+
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: app/package.json
+
+      - name: Build the Pages site
+        working-directory: app
+        env:
+          VITE_RAPID_API_KEY: ${{ secrets.VITE_RAPID_API_KEY }}
+          VITE_WEATHER_API_KEY: ${{ secrets.VITE_WEATHER_API_KEY }}
+          VITE_MAPBOX_ACCESS_TOKEN: ${{ secrets.VITE_MAPBOX_ACCESS_TOKEN || vars.VITE_MAPBOX_ACCESS_TOKEN }}
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: |
+          test -n "$VITE_RAPID_API_KEY" || { echo '::error::VITE_RAPID_API_KEY is missing'; exit 1; }
+          test -n "$VITE_WEATHER_API_KEY" || { echo '::error::VITE_WEATHER_API_KEY is missing'; exit 1; }
+          test -n "$VITE_MAPBOX_ACCESS_TOKEN" || echo '::warning::Mapbox token missing. Precipitation radar will be unavailable.'
+          git apply ../pages-build.patch
+          pnpm install --frozen-lockfile
+          pnpm build --base "${PAGES_BASE_PATH%/}/"
+          printf '%s\n' "$(git rev-parse HEAD)" > dist/build-commit.txt
+
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
