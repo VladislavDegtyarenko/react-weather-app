@@ -39,6 +39,13 @@ jest.mock("../src/components/CityPage/Heading", () => ({
   ),
 }));
 
+jest.mock("../src/components/CityMap/MapboxCityMap", () => ({
+  __esModule: true,
+  default: ({ longitude, latitude }: { longitude: number; latitude: number }) => (
+    <div data-testid="city-pin">{longitude},{latitude}</div>
+  ),
+}));
+
 const RouteLocation = () => {
   const location = useLocation();
   return <div data-testid="current-path">{location.pathname}</div>;
@@ -118,6 +125,35 @@ describe("route checks", () => {
     renderWithState([], "/unknown");
 
     expect(await screen.findByText("No Cities Found")).toBeTruthy();
+  });
+
+  it("places the current city's pin below the forecast and updates it when changing tabs", async () => {
+    const ORIGINAL_TOKEN = process.env.VITE_MAPBOX_ACCESS_TOKEN;
+    process.env.VITE_MAPBOX_ACCESS_TOKEN = "test-token";
+
+    try {
+      const KYIV = { ...cityWithData(10, "Kyiv", "Ukraine"), latitude: 50.45, longitude: 30.52 };
+      const SYDNEY = { ...cityWithData(11, "Sydney", "Australia"), latitude: -33.87, longitude: 151.21 };
+      const CITIES = [KYIV, SYDNEY];
+
+      renderWithState(CITIES, `/${getCityRouteSlug(KYIV, CITIES)}`);
+
+      const FORECAST = screen.getByText("24-hour forecast");
+      const MAP = screen.getByRole("region", { name: "Map of Kyiv, Ukraine" });
+      expect(FORECAST.compareDocumentPosition(MAP) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect((await screen.findByTestId("city-pin")).textContent).toBe("30.52,50.45");
+
+      fireEvent.click(screen.getByRole("tab", { name: "Sydney" }));
+
+      expect(screen.getByRole("region", { name: "Map of Sydney, Australia" })).toBeTruthy();
+      expect((await screen.findByTestId("city-pin")).textContent).toBe("151.21,-33.87");
+    } finally {
+      if (ORIGINAL_TOKEN === undefined) {
+        delete process.env.VITE_MAPBOX_ACCESS_TOKEN;
+      } else {
+        process.env.VITE_MAPBOX_ACCESS_TOKEN = ORIGINAL_TOKEN;
+      }
+    }
   });
 
   it("switches route by city tabs", async () => {

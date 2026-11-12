@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 import { WEATHER_API_BASE_URL, WEATHER_API_KEY } from "../api/weather";
+import { correctSavedCityCoordinates } from "../functions/correctSavedCityCoordinates";
 
 // Types
 import { InitialState, City, WeatherData, ForecastData } from "../types/types";
@@ -27,8 +28,8 @@ const DEFAULT_STATE: City[] = [
     id: 51185,
     city: "Ubud",
     country: "Indonesia",
-    latitude: -8.389712542019078,
-    longitude: 115.17302126836792,
+    latitude: -8.5098,
+    longitude: 115.2654,
   },
   {
     id: 4935,
@@ -44,7 +45,8 @@ let initialState: InitialState;
 // load state from localStorage if possible
 try {
   const savedState = localStorage.getItem(LOCAL_STORAGE_KEY);
-  initialState = savedState ? JSON.parse(savedState) : { cities: DEFAULT_STATE };
+  const parsedState: InitialState = savedState ? JSON.parse(savedState) : { cities: DEFAULT_STATE };
+  initialState = { ...parsedState, cities: parsedState.cities.map(correctSavedCityCoordinates) };
 } catch (error) {
   console.error("Error loading weather state from localStorage:", error);
   initialState = { cities: DEFAULT_STATE };
@@ -96,7 +98,7 @@ const weatherSlice = createSlice({
       const city = action.payload;
       if (!city) return;
 
-      state.cities.push(city);
+      state.cities.push(correctSavedCityCoordinates(city));
       // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
     },
     removeCity: (state, action: PayloadAction<City["id"]>) => {
